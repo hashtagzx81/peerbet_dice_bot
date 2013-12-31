@@ -132,7 +132,11 @@ var onRoll = function(e){
 
         rolls++;    // increment roll count
 
-        console.log("Roll " + rolls + " " + winMsg + " " + Number(e.game_pay).toFixed(8));
+		var gamePay = isWin ? e.game_won : e.game_bet;
+
+        console.log("Roll " + rolls + " " + winMsg + " " + Number(gamePay).toFixed(8));
+		console.log("Current Balance: " + Number(e.user_balance).toFixed(8));
+		console.log(" ");
         
         if(rolls >= max_rolls){
             console.log("Limit of " + max_rolls + " games rolled.");
