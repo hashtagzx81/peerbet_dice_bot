@@ -152,15 +152,39 @@ var onRoll = function(e){
 }
 
 var onWin = function(seed){
-    current_bet = onWinReturnToBase ? base : current_bet * onWinMultiplier;
-    console.log("Setting next bet to " + Number(current_bet).toFixed(8));
-    placeBet(current_bet, seed);
+	if(onWinReturnToBase) {
+		current_bet = base;
+		multiplier = 0;  // Reset mulitplier as we're only wanting to stop after max_multiplier consecutive, not additive.
+	} else {
+		multiplier++;  // increment multiplier count
+		current_bet = current_bet * onWinMultiplier;
+	}
+
+	if(multiplier >= max_multiplier){
+		console.log("Limit of " + max_multiplier + " bet multiplications hit.");
+		process.exit();
+	} else {
+	    console.log("Setting next bet to " + Number(current_bet).toFixed(8));
+	    placeBet(current_bet, seed);
+	}
 }
 
 var onLose = function(seed){
-    current_bet = onLoseReturnToBase ? base : current_bet * onLoseMultiplier;
-    console.log("Setting next bet to " + Number(current_bet).toFixed(8));
-    placeBet(current_bet, seed);
+	if(onLoseReturnToBase) {
+		current_bet = base;
+		multiplier = 0;  // Reset mulitplier as we're only wanting to stop after max_multiplier consecutive, not additive.
+	} else {
+		multiplier++;  // increment multiplier count
+		current_bet = current_bet * onLoseMultiplier;
+	}
+
+	if(multiplier >= max_multiplier){
+		console.log("Limit of " + max_multiplier + " bet multiplications hit.");
+		process.exit();
+	} else {
+	    console.log("Setting next bet to " + Number(current_bet).toFixed(8));
+	    placeBet(current_bet, seed);
+	}
 }
 
 var start = function(seed){
@@ -172,12 +196,13 @@ var user = "";  // your peerbet username here
 var pwd = "";  // your peerbet password here
 var base = 0.0000001;  // our base bet is 10 sats
 var current_bet = base; // this changes depending on the onWin / onLose increments
-var max_rolls = 10;     // we will stop after this number of rolls
+var max_rolls = 200;     // we will stop after this number of rolls
 var rolls = 0;          // rolls made so far;
 var onWinReturnToBase = true; // next bet will be 'base' if this is true, otherwise multiplied by increment
 var onWinMultiplier = 0;   // multiple to increase bet by on win (current_bet = current_bet * onWinMultiplier)
 var onLoseReturnToBase = false;  // next bet will be 'base' if this is true, otherwise multiplied by increment
 var onLoseMultiplier = 2;  // multiple to increase bet by on lose
-
+var multiplier = 0;  // Number of times the bet has been multiplied so far
+var max_multiplier = 6;  // Number of times to mulitply bet, if greater, stop rolling
 
 requestKey(user, pwd);
